@@ -97,7 +97,6 @@ function movieThis(){
             console.log(error);
         })
 }
-
 function doWhatItSays(){
     command = fs.readFileSync("random.txt", "utf8").split(",")[0];
     params = fs.readFileSync("random.txt", "utf8").split(",").slice(1).join(" ");
@@ -114,6 +113,13 @@ function doWhatItSays(){
             break;
     }
 }
+function help() {
+    console.log(chalk.red("node liri.js ") + chalk.blue("concert-this ") + chalk.yellow("<parameters>"));
+    console.log(chalk.red("node liri.js ") + chalk.blue("spotify-this-song ") + chalk.yellow("<parameters>"));
+    console.log(chalk.red("node liri.js ") + chalk.blue("movie-this ") + chalk.yellow("<parameters>"));
+    console.log(chalk.red("node liri.js ") + chalk.blue("do-what-it-says "));
+
+}
 
 //Switch Case
 switch(command){
@@ -129,4 +135,7 @@ switch(command){
     case "do-what-it-says":
         doWhatItSays();
     break;
+    case "help":
+        help();
+        break;
 }
