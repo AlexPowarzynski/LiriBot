@@ -1,3 +1,4 @@
+//Variables
 require("dotenv").config();
 const fs = require("fs");
 let keys = require("./keys.js");
@@ -6,10 +7,8 @@ let spotify = new Spotify(keys.spotify);
 const axios = require('axios');
 let command = process.argv[2];
 let params = process.argv.slice(3).join(" ");
-// var util = require('util');
 let moment = require('moment');
 const chalk = require('chalk');
-let bur;
 
 //Functions
 function concertThis(){
@@ -18,6 +17,7 @@ function concertThis(){
 //https://rest.bandsintown.com/artists/EDEN?app_id=trilogy
     axios.get(url)
         .then(function(response) {
+            console.log(params);
             fs.appendFileSync("log.txt", "\n \n" + "##Concert-This Results:" + "\n" + params, err =>{if (err) throw err;});
             for(i=0; i<10;i++){
             let venue = response.data[i].venue;
@@ -44,10 +44,14 @@ function spotifyThis(){
     spotify
         .search({ type: 'track', query: params })
         .then(function(res) {
+            console.log(params);
+
             console.log(chalk.red("Band Name: ") + res.tracks.items[0].artists[0].name);
             console.log(chalk.red("Track Name: ") + res.tracks.items[0].name);
             console.log(chalk.red("Preview Link: ") + res.tracks.items[0].preview_url);
             console.log(chalk.red("Album Name: ") + res.tracks.items[0].album.name);
+
+            // Appends to the Log.txt file
             fs.appendFileSync("log.txt",
                 "\n \n ##Spotify-This-Song Results: \n" + params + "\n" +
                 "\nBand Name: " + res.tracks.items[0].artists[0].name +
@@ -66,6 +70,7 @@ function movieThis(){
         .then(function(response) {
             // fs.writeFileSync("Results.json", JSON.stringify(response));
             console.log(" ");
+            console.log(params);
             console.log(chalk.red("Title: ") + response.data.Title);
             console.log(chalk.red("Year: ") + (response.data.Released).split(" ")[2]);
             console.log(chalk.red("IMDB Rating: ") + response.data.imdbRating);
@@ -74,7 +79,7 @@ function movieThis(){
             console.log(chalk.red("Language: ") + response.data.Language);
             console.log(chalk.red("Plot: ") + response.data.Plot);
             console.log(chalk.red("Actors: ") + response.data.Actors);
-
+            // Appends to the Log.txt file
             fs.appendFileSync("log.txt",
                 "\n \n ##Movie-This Results: \n" + params + "\n" +
                 "\nTitle: " + response.data.Title +
@@ -93,27 +98,6 @@ function movieThis(){
         })
 }
 
-
-
-
-
-
-//Switch Case
-switch(command){
-    case "concert-this":
-        concertThis();
-    break;
-    case "spotify-this-song":
-        spotifyThis();
-    break;
-    case "movie-this":
-        movieThis();
-    break;
-    case "do-what-it-says":
-        doWhatItSays();
-    break;
-}
-
 function doWhatItSays(){
     command = fs.readFileSync("random.txt", "utf8").split(",")[0];
     params = fs.readFileSync("random.txt", "utf8").split(",").slice(1).join(" ");
@@ -129,6 +113,20 @@ function doWhatItSays(){
             movieThis(params);
             break;
     }
+}
 
-//
+//Switch Case
+switch(command){
+    case "concert-this":
+        concertThis();
+    break;
+    case "spotify-this-song":
+        spotifyThis();
+    break;
+    case "movie-this":
+        movieThis();
+    break;
+    case "do-what-it-says":
+        doWhatItSays();
+    break;
 }
